@@ -5,6 +5,9 @@ import ayai.systems.CollisionSystem
 
 import com.artemis.{Entity, World}
 import com.artemis.managers.GroupManager
+import com.artemis.World
+import com.artemis.EntityManager
+import net.liftweb.json._
 
 
 object CollisionApp {
@@ -36,6 +39,25 @@ object CollisionApp {
 
     println("Note: You should see one \"OVERLAP!\" and then \"DONE\"")
     world.process
+
+    // convert all entities in world to JSON of IDs and positions
+    val eManager : EntityManager = world.getEntityManager()
+    val numEntities = eManager.getActiveEntityCount()
+    var entityJString : String = "{"
+
+    for( i <- 0 until numEntities) {
+        val tempEntity : Entity = eManager.getEntity(i)
+        val tempPos : Position = tempEntity.getComponent(classOf[Position])
+        val tempId = tempEntity.getId()
+        
+        entityJString += "{ playerId = " + tempId + ", position_x = " + tempPos.x + ", position_y = " + tempPos.y + "}"
+    }
+
+    entityJString += "}"
+
+    println(entityJString)
+
+
     println("DONE")
   }
   
